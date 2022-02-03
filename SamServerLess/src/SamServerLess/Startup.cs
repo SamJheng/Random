@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,9 +27,18 @@ namespace SamServerLess
         {
             services.AddControllers()
                     .AddNewtonsoftJson();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
 
             string region = Environment.GetEnvironmentVariable("AWS_REGION") ?? RegionEndpoint.APNortheast2.SystemName;
-            AmazonDynamoDBClient client = new AmazonDynamoDBClient(RegionEndpoint.GetBySystemName(region));
+                  AmazonDynamoDBClient client = new AmazonDynamoDBClient(RegionEndpoint.GetBySystemName(region));
             services.AddSingleton<IAmazonDynamoDB>(client);
         }
 
@@ -46,6 +55,8 @@ namespace SamServerLess
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseCors("CorsPolicy");
 
             app.UseEndpoints(endpoints =>
             {

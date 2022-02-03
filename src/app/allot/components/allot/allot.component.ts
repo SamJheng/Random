@@ -1,3 +1,4 @@
+import { Member } from './../../../model/Member';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
@@ -9,12 +10,18 @@ import { DrawingService } from '../../service/drawing.service';
 })
 export class AllotComponent implements OnInit {
   allotForm: FormGroup;
+  memberMenuText?:string;
   constructor(
     private drawingService: DrawingService
   ) {
-    const mstring = ['鄭宇佋', '黃傑', 'andy', 'amy'].join('\n');
+    this.drawingService.getMembers().subscribe((res:Member[])=>{
+      const members= res.map(member=>member.name);
+      this.memberMenuText = members.join('\n');
+      const memberMenu = this.allotForm.get('memberMenu');
+      memberMenu?.setValue(this.memberMenuText);
+    })
     this.allotForm = new FormGroup({
-      memberMenu: new FormControl(mstring, []),
+      memberMenu: new FormControl(this.memberMenuText, []),
     });
   }
 
@@ -31,7 +38,7 @@ export class AllotComponent implements OnInit {
     console.log(event);
   }
   onSubmit(){
-    const memberMenu = this.allotForm.get('memberMenu')
+    const memberMenu = this.allotForm.get('memberMenu');
     const memberItemList = this.drawingService.transformToMemberItemList(memberMenu?.value);
     console.log(memberItemList)
     this.drawingService.postMemberItemListToSave(memberItemList).subscribe((obres)=>{

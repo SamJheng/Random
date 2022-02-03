@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -24,13 +24,46 @@ namespace SamServerLess.Controllers
             this.client = client;
             this.context = new DynamoDBContext(client);
         }
-
-        // GET api/books
-        [HttpGet("info")]
-        public string Get()
+        [HttpGet]
+        public async Task<ObjectResult> GetMembers()
         {
+            List<Member> members = await GetAllMember();
+            return Ok(members);
+        }
+        public async Task<List<Member>> GetAllMember()
+        {
+            ScanFilter filter = new ScanFilter();
+            filter.AddCondition("name", ScanOperator.IsNotNull);
+            ScanOperationConfig scanConfig = new ScanOperationConfig
+            {
+              Filter = filter
+            };
+            var queryResult = await context.FromScanAsync<Member>(scanConfig).GetRemainingAsync();
+            return queryResult;
+        }
+        [HttpPost]
+        public async Task<ObjectResult> SaveMembers([FromBody] List<Member> members)
+        {
+      
+            try {
+
+                List<Member> oldmembers = await GetAllMember();
+                foreach (var member in oldmembers)
+                {
+                    await context.DeleteAsync<Member>(member);
+                    LambdaLogger.Log(member.ToString());
+                }
+                foreach (var member in members)
+                {
+                    await context.SaveAsync<Member>(member);
+                    LambdaLogger.Log(member.ToString());
+                }
+                return Ok("Saved!");
+            } catch(Exception ex)
+            {
+                return BadRequest(ex);
+            }
             
-            return "SaveMemberController";
         }
     }
 }
