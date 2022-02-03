@@ -6,6 +6,7 @@ import { AllotComponent } from './components/allot/allot.component';
 import { MaterialModule } from '../material/material.module';
 import { NgxFileDropModule } from 'ngx-file-drop';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
@@ -18,6 +19,8 @@ import { HttpClientModule } from '@angular/common/http';
     AppRoutingModule,
     MaterialModule,
     HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
     NgxFileDropModule
   ],
   exports:[

@@ -1,26 +1,29 @@
 <div class="w-full flex justify-around">
   <mat-card class="w-full my-5 max-w-md">
-    <div class="inline-flex flex-col w-full box-border items-center p-1">
-      <mat-form-field class="w-96 h-full my-2" appearance="outline">
-        <mat-label>得獎數量</mat-label>
-        <input matInput placeholder="1-9999">
-        <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-      </mat-form-field>
-      <div class="flex justify-around w-full">
-        <ngx-file-drop dropZoneLabel="Drop files here" class="w-full mb-2" (onFileDrop)="dropped($event)" (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
-          <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
-            <button type="button" (click)="openFileSelector()">匯入CSV檔案</button>
-          </ng-template>
-        </ngx-file-drop>
+    <form [formGroup]="allotForm" >
+      <div class="inline-flex flex-col w-full box-border items-center p-1">
+        <mat-form-field class="w-96 h-full my-2" appearance="outline">
+          <mat-label>得獎數量</mat-label>
+          <input matInput placeholder="1-9999">
+          <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+        </mat-form-field>
+        <!-- <div class="flex justify-around w-full">
+          <ngx-file-drop dropZoneLabel="Drop files here" class="w-full mb-2" (onFileDrop)="dropped($event)" (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
+            <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+              <button type="button" (click)="openFileSelector()">匯入CSV檔案</button>
+            </ng-template>
+          </ngx-file-drop>
+        </div> -->
+        <mat-form-field class="w-96 h-full my-2" appearance="outline">
+          <mat-label>抽獎名單</mat-label>
+          <textarea formControlName="memberMenu" class="w-96 input-h" matInput></textarea>
+        </mat-form-field>
+        <div class="flex justify-around w-full">
+          <button mat-flat-button color="primary">準備抽獎</button>
+          <button mat-flat-button (click)="onSubmit()" color="accent">儲存名單</button>
+          <button mat-flat-button color="warn">清空名單</button>
+        </div>
       </div>
-      <mat-form-field class="w-96 h-full my-2" appearance="outline">
-        <mat-label>抽獎名單</mat-label>
-        <textarea class="w-96 input-h" matInput></textarea>
-      </mat-form-field>
-      <div class="flex justify-around w-full">
-        <button mat-flat-button color="primary">準備抽獎</button>
-        <button mat-flat-button color="warn">清空名單</button>
-      </div>
-    </div>
+    </form>
   </mat-card>
 </div>
